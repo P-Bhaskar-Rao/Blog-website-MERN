@@ -5,6 +5,7 @@ import axios from 'axios'
 import  {SIGNIN_URL} from '../../api_routes.js'
 import { useDispatch,useSelector } from "react-redux";
 import {signinFail,signinStart,signinSuccess} from '../redux/user/UserSlice.js'
+import OAuth from "../components/OAuth.jsx";
 const Signin = () => {
   const navigate=useNavigate()
   const dispatch=useDispatch()
@@ -81,6 +82,7 @@ const {loading,error:errorMessage}=useSelector(state=>state.user)
                 </>) :'signin'
               }
             </Button>
+            <OAuth/>
           </form>
 
           <div className="flex text-sm mt-5 gap-2">

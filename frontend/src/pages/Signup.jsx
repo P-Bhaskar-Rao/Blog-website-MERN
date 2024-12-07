@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import axios from 'axios'
 import  {SIGNUP_URL} from '../../api_routes.js'
+import OAuth from "../components/OAuth.jsx";
 const Signup = () => {
   const navigate=useNavigate()
   const usernameRef=useRef()
@@ -87,6 +88,7 @@ const Signup = () => {
                 </>) :'signup'
               }
             </Button>
+            <OAuth/>
           </form>
 
           <div className="flex text-sm mt-5 gap-2">
