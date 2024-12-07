@@ -73,11 +73,11 @@ const Signup = () => {
             </div>
             <div>
               <Label value="email"></Label>
-              <TextInput type="email" placeholder="Email" id="email" ref={emailRef}/>
+              <TextInput type="email" placeholder="name@company.com" id="email" ref={emailRef}/>
             </div>
             <div>
               <Label value="password"></Label>
-              <TextInput type="password" placeholder="Password" id="password" ref={passwordRef}/>
+              <TextInput type="password" placeholder="********" id="password" ref={passwordRef}/>
             </div>
             <Button type="submit" gradientDuoTone="purpleToPink" disabled={loading}>
               {
