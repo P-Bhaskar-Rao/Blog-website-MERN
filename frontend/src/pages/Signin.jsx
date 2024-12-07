@@ -3,44 +3,42 @@ import { useRef, useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
 import axios from 'axios'
 import  {SIGNIN_URL} from '../../api_routes.js'
+import { useDispatch,useSelector } from "react-redux";
+import {signinFail,signinStart,signinSuccess} from '../redux/user/UserSlice.js'
 const Signin = () => {
   const navigate=useNavigate()
+  const dispatch=useDispatch()
   const emailRef=useRef()
   const passwordRef=useRef()
-  const [errorMessage,setErrorMessage]=useState(null)
+ 
   const [successMessage,setSuccessMessage]=useState(null)
-  const [loading,setLoading]=useState(false)
-
+  
+const {loading,error:errorMessage}=useSelector(state=>state.user)
   const handleSubmit=(e)=>{
     e.preventDefault();
-    
     const email=emailRef.current.value;
     const password=passwordRef.current.value
     if( !email || !password){
-      return setErrorMessage("All fields are required!")
+      return dispatch(signinFail("All fields are required!"))
     }
     const formData={email,password}
     try {
-      setLoading(true)
-      setErrorMessage(null)
+      dispatch(signinStart())
       setSuccessMessage(null)
       const response=axios.post(SIGNIN_URL,formData)
       response.then((res)=>{
         console.log(res)
         if(res.data.success===false){
-          setErrorMessage(res.data.message)
+          dispatch(signinFail(res.data.message))
         }else{
-          setSuccessMessage(res.data.message)
+          dispatch(signinSuccess(res.data))
           navigate('/')
         }
-        setLoading(false)
       }).catch((err)=>{
-        setErrorMessage(err.response.data.message)
-        setLoading(false)
+       dispatch(signinFail(err.response.data.message))
       })
     } catch (error) {
-      setErrorMessage(error.message)
-      setLoading(false)
+      dispatch(signinFail(error.message))
     }
     
     emailRef.current.value=""
