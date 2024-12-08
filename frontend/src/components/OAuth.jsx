@@ -26,6 +26,7 @@ const OAuth = () => {
       console.log(res.data);
          if(res.status===200){
           dispatch(signinSuccess(res.data))
+          navigate('/')
          }
     } catch (error) {
       console.log(error);

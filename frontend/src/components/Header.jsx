@@ -1,10 +1,12 @@
-import { Button, Navbar, TextInput } from "flowbite-react";
+import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import React from "react";
-import { Link,useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
+import { useSelector } from "react-redux";
 const Header = () => {
-  const path=useLocation().pathname
+  const path = useLocation().pathname;
+  const { currentUser } = useSelector((state) => state.user);
   return (
     <Navbar className="border-b-2">
       <Link
@@ -40,20 +42,37 @@ const Header = () => {
         >
           <FaMoon />
         </Button>
-        <Button gradientDuoTone="purpleToBlue" outline>Signin</Button>
-        <Navbar.Toggle/>
+        {currentUser ? (
+          <Dropdown arrowIcon={false} inline label={<Avatar alt="user-profile-image" img={currentUser.googlePhotoURL} rounded/>}>
+            <Dropdown.Header className="text-center">
+              <span className="block text-sm font-bold">@{currentUser.username}</span>
+              <span className="block text-sm font-medium truncate">{currentUser.email}</span>
+            </Dropdown.Header>
+            <Link to='/dashboard?tab=profile'>
+            <Dropdown.Item>profile</Dropdown.Item>
+            <Dropdown.Divider/>
+            <Dropdown.Item>signout</Dropdown.Item>
+            </Link>
+          </Dropdown>
+        ) : (
+          <Button gradientDuoTone="purpleToBlue" outline>
+            Signin
+          </Button>
+        )}
+
+        <Navbar.Toggle />
       </div>
-        <Navbar.Collapse>
-          <Navbar.Link active={'/'===path} as={'div'}>
-            <Link to="/">Home</Link>
-          </Navbar.Link>
-          <Navbar.Link active={'/about'===path} as={'div'}>
-            <Link to="/about">About</Link>
-          </Navbar.Link>
-          <Navbar.Link active={'/projects' === path} as={'div'}>
-            <Link to="/projects">Projects</Link>
-          </Navbar.Link>
-        </Navbar.Collapse>
+      <Navbar.Collapse>
+        <Navbar.Link active={"/" === path} as={"div"}>
+          <Link to="/">Home</Link>
+        </Navbar.Link>
+        <Navbar.Link active={"/about" === path} as={"div"}>
+          <Link to="/about">About</Link>
+        </Navbar.Link>
+        <Navbar.Link active={"/projects" === path} as={"div"}>
+          <Link to="/projects">Projects</Link>
+        </Navbar.Link>
+      </Navbar.Collapse>
     </Navbar>
   );
 };
