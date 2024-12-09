@@ -20,7 +20,7 @@ const Dashboard = () => {
       <div className="min-w-56">
         <DashSideBar/>
       </div>
-      <div>
+      <div className="w-full">
         {tab==='profile' && <DashProfile/>}
       </div>
     </div>
