@@ -2,7 +2,7 @@ import { Button } from "flowbite-react";
 import { AiFillGoogleCircle } from "react-icons/ai";
 import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
 import { app } from "../firebase";
-import { GOOGLE_AUTH } from "../../api_routes";
+import {  GOOGLE_AUTH_URL } from "../../api_routes";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { signinSuccess, signinFail } from "../redux/user/UserSlice";
@@ -22,7 +22,7 @@ const OAuth = () => {
         email: resultsFromGoogle.user.email,
         googlePhotoURL: resultsFromGoogle.user.photoURL,
       };
-      const res = await axios.post(GOOGLE_AUTH, data);
+      const res = await axios.post(GOOGLE_AUTH_URL, data);
       console.log(res.data);
          if(res.status===200){
           dispatch(signinSuccess(res.data))

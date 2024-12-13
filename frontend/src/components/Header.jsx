@@ -10,6 +10,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
+  console.log("currentUser=",currentUser)
   return (
     <Navbar className="border-b-2">
       <Link
@@ -53,7 +54,7 @@ const Header = () => {
             label={
               <Avatar
                 alt="user-profile-image"
-                img={currentUser.googlePhotoURL}
+                img={currentUser.profilePicture}
                 rounded
               />
             }
@@ -73,9 +74,11 @@ const Header = () => {
             </Link>
           </Dropdown>
         ) : (
+          <Link to='/signin'>
           <Button gradientDuoTone="purpleToBlue" outline>
             Signin
           </Button>
+          </Link>
         )}
 
         <Navbar.Toggle />
