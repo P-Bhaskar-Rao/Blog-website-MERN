@@ -5,12 +5,13 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
+import { HOST } from "../../api_routes";
+
 const Header = () => {
   const path = useLocation().pathname;
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
-  console.log("currentUser=",currentUser)
   return (
     <Navbar className="border-b-2">
       <Link
@@ -54,7 +55,7 @@ const Header = () => {
             label={
               <Avatar
                 alt="user-profile-image"
-                img={currentUser.profilePicture}
+                img={currentUser.profilePicture.substr(0,8)==='https://'?currentUser.profilePicture:`${HOST}/${currentUser.profilePicture}`}
                 rounded
               />
             }
@@ -74,9 +75,9 @@ const Header = () => {
             </Link>
           </Dropdown>
         ) : (
-          <Link to='/signin'>
+          <Link to={path==='/signin'?'/signup':'/signin'}>
           <Button gradientDuoTone="purpleToBlue" outline>
-            Signin
+           {path==='/signin'?'signup':'signin'}
           </Button>
           </Link>
         )}

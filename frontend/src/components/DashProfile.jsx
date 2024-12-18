@@ -1,41 +1,71 @@
 import { Button, TextInput } from "flowbite-react";
 import axios from 'axios'
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector,useDispatch } from "react-redux";
-import { signinSuccess } from "../redux/user/UserSlice";
-import { PROFILE_UPLOAD_URL } from "../../api_routes";
+import { ADD_PROFILE_IMAGE_URL, HOST, PROFILE_UPDATE_URL } from "../../api_routes.js";
+import {updateStart,updateFail,updateSuccess} from "../redux/user/UserSlice.js";
 const DashProfile = () => {
-  const { currentUser } = useSelector((state) => state.user);
-  const [profileImage, setProfileImage] = useState(null);
-  // const [fileURL, setFileURL] = useState(null);
+  const { currentUser,loading } = useSelector((state) => state.user);
+  
+  const [profileImage,setProfileImage]=useState(null)
+  const [profilePicture, setProfilePicture] = useState(currentUser.profilePicture);
+  const [fileURL, setFileURL] = useState(null);
   const filePickerRef = useRef();
+  const usernameRef=useRef()
+  const emailRef=useRef()
+  const passwordRef=useRef()
   const dispatch=useDispatch()
   const handleImageChange = async(e) => {
     const file = e.target.files[0];
     if (file) {
-      setProfileImage(file);
-      // setFileURL(URL.createObjectURL(file));
+      setFileURL(URL.createObjectURL(file));
       const formData=new FormData()
       formData.append("profile-image",file)
-      formData.append("id",currentUser._id)
-      const response=await axios.post(PROFILE_UPLOAD_URL,formData,{withCredentials:true})
+      const response=await axios.post(`${ADD_PROFILE_IMAGE_URL}/${currentUser._id}`,formData,{withCredentials:true})
      console.log(response)
      if(response.status===200){
-      dispatch(signinSuccess({...currentUser,profilePicture:response.data.profilePicture}))
+      setProfilePicture(response.data.message)
      }
     }
+    
   };
 
   useEffect(()=>{
-uploadImage()
-  },[profileImage])
-  const uploadImage=async()=>{
+    if(currentUser.profilePicture){
+      setProfileImage(currentUser.profilePicture.substr(0,8)==='https://'?currentUser.profilePicture:`${HOST}/${currentUser.profilePicture}`)
+      console.log(profileImage)
+    }
+   
+  },[currentUser.profilePicture])
+
+ 
+
+  const handleSubmit=async(e)=>{
+    e.preventDefault()
+    const formData={
+      username:usernameRef.current.value,
+      email:emailRef.current.value,
+      password:passwordRef.current.value,
+      profilePicture,
+    }
+    dispatch(updateStart())
+    try {
+      const response=await axios.put(`${PROFILE_UPDATE_URL}/${currentUser._id}`,formData,{withCredentials:true})
+      console.log(response)
+      if(response.status===200){
+        dispatch(updateSuccess(response.data))
+        console.log("updatedData=",response.data)
+      }
+      setFileURL(null)
+    } catch (error) {
+      dispatch(updateFail(error))
+    }
     
   }
   return (
     <div className="max-w-lg p-3 mx-auto w-full">
       <h1 className="text-center my-7 font-semibold text-3xl">Profile</h1>
-      <form className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4" onSubmit={(e)=>handleSubmit(e)}>
         <input
           type="file"
           accept="image/*"
@@ -48,7 +78,7 @@ uploadImage()
           onClick={() => filePickerRef.current.click()}
         >
           <img
-            src={currentUser.profilePicture}
+            src={fileURL?fileURL:profileImage}
             className="w-full h-full rounded-full border-8 border-[lightgray] object-cover"
             alt="profile-picture"
           />
@@ -58,15 +88,17 @@ uploadImage()
           placeholder="username"
           defaultValue={currentUser.username}
           id="username"
+          ref={usernameRef}
         />
         <TextInput
           type="email"
           placeholder="email"
           defaultValue={currentUser.email}
           id="email"
+          ref={emailRef}
         />
-        <TextInput type="password" placeholder="password" id="password" />
-        <Button type="submit" gradientDuoTone="purpleToBlue" outline >
+        <TextInput type="password" placeholder="password" id="password"  ref={passwordRef}/>
+        <Button type="submit" gradientDuoTone="purpleToBlue" outline disabled={loading}>
           update
         </Button>
       </form>

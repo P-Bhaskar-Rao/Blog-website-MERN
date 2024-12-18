@@ -6,6 +6,7 @@ import  {SIGNIN_URL} from '../../api_routes.js'
 import { useDispatch,useSelector } from "react-redux";
 import {signinFail,signinStart,signinSuccess} from '../redux/user/UserSlice.js'
 import OAuth from "../components/OAuth.jsx";
+
 const Signin = () => {
   const navigate=useNavigate()
   const dispatch=useDispatch()
@@ -26,7 +27,7 @@ const {loading,error:errorMessage}=useSelector(state=>state.user)
     try {
       dispatch(signinStart())
       setSuccessMessage(null)
-      const response=axios.post(SIGNIN_URL,formData)
+      const response=axios.post(SIGNIN_URL,formData,{withCredentials:true})
       response.then((res)=>{
         console.log(res.data)
         if(res.data.success===false){

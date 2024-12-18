@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const path=require('path')
 const cors=require('cors')
 const cookieParser=require('cookie-parser')
 const multer=require('multer')
@@ -28,12 +29,10 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use('/uploads/profiles',express.static('uploads/profiles'))
 
-
-
-
 app.use('/api/user',userRoutes)
 app.use('/api/auth',authRoutes)
-app.use('/api/uploads',uploadRoutes)
+app.use('/api/upload',uploadRoutes)
+
 app.use((err,req,res,next)=>{
   const statusCode=err.statusCode||500
   const message=err.message||'Internal server error'
@@ -44,6 +43,7 @@ app.use((err,req,res,next)=>{
     message
   })
 })
+
 app.listen(3000, () => {
   console.log("server is running on port 3000");
 });

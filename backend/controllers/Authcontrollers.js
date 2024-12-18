@@ -1,6 +1,4 @@
 const bcryptjs = require("bcryptjs");
-
-
 const { User } = require("../models/Usermodel.js");
 const { errorHandler } = require("../utils/error.js");
 const { generateJwtToken } = require("../utils/generateJwtToken.js");
@@ -43,7 +41,6 @@ const signin = async (req, res, next) => {
     }
 
     const token = generateJwtToken(validUser);
-    console.log("signin",token);
     const { password: pass, ...rest } = validUser._doc;
     res
       .cookie("token", token, {
@@ -89,7 +86,6 @@ const google = async (req, res, next) => {
       return res
         .status(200)
         .cookie("token", token, {
-          httpOnly: true,
           secure: true,
           sameSite: "none",
         })

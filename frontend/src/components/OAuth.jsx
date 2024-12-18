@@ -22,7 +22,7 @@ const OAuth = () => {
         email: resultsFromGoogle.user.email,
         googlePhotoURL: resultsFromGoogle.user.photoURL,
       };
-      const res = await axios.post(GOOGLE_AUTH_URL, data);
+      const res = await axios.post(GOOGLE_AUTH_URL, data,{withCredentials:true});
       console.log(res.data);
          if(res.status===200){
           dispatch(signinSuccess(res.data))
