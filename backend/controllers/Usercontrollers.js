@@ -75,6 +75,7 @@ const deleteUser=async(req,res,next)=>{
     );
   }
 
+  res.clearCookie('token');
   try {
     await User.findOneAndDelete(req.params.userId)
     return res.status(200).json({message:"user has been deleted successfully"})
@@ -83,9 +84,18 @@ const deleteUser=async(req,res,next)=>{
   }
 }
 
+const signout=async(req,res,next)=>{
+  try {
+    res.clearCookie('token')
+    return res.status(200).send("user has been signed out")
+  } catch (error) {
+    return next(error)
+  }
+}
 module.exports = {
   updateUser,
   deleteUser,
+  signout,
 };
 
 

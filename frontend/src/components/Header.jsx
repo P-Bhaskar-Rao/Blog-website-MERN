@@ -5,13 +5,40 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
-import { HOST } from "../../api_routes";
+import { HOST, SIGNOUT_URL } from "../../api_routes";
+import { signoutSuccess } from "../redux/user/UserSlice";
+import axios from "axios";
 
 const Header = () => {
   const path = useLocation().pathname;
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
+  console.log("currentUser=",currentUser)
+  
+  const profileImage = currentUser && currentUser.profilePicture
+    ? currentUser.profilePicture.substr(0, 5) === 'https'
+      ? currentUser.profilePicture
+      : `${HOST}/${currentUser.profilePicture}`
+    : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
+
+    console.log(profileImage)
+
+
+    const handleSignout=async()=>{
+      console.log('clicked')
+      try {
+        const res=await axios.post(SIGNOUT_URL,{withCredentials:true})
+        console.log(res)
+        if(res.status===200){
+          
+          dispatch(signoutSuccess())
+          console.log(currentUser)
+        }
+      } catch (error) {
+        console.log(error.message)
+      }
+    }
   return (
     <Navbar className="border-b-2">
       <Link
@@ -23,6 +50,7 @@ const Header = () => {
         </span>
         Blog
       </Link>
+       
       <form>
         <TextInput
           type="text"
@@ -39,10 +67,10 @@ const Header = () => {
         <AiOutlineSearch />
       </Button>
 
-      <div className="flex justify-center items-center gap-2 md:order-2">
+      <div className="flex justify-center items-center gap-2 md:order-3 ">
         <Button
           color="gray"
-          className="w-12 h-10 hidden sm:inline items-center justify-center"
+          className="w-12 h-10  items-center justify-center"
           pill
           onClick={() => dispatch(toggleTheme())}
         >
@@ -55,7 +83,7 @@ const Header = () => {
             label={
               <Avatar
                 alt="user-profile-image"
-                img={currentUser.profilePicture.substr(0,8)==='https://'?currentUser.profilePicture:`${HOST}/${currentUser.profilePicture}`}
+                img={profileImage}
                 rounded
               />
             }
@@ -71,7 +99,7 @@ const Header = () => {
             <Link to="/dashboard?tab=profile">
               <Dropdown.Item>profile</Dropdown.Item>
               <Dropdown.Divider />
-              <Dropdown.Item>signout</Dropdown.Item>
+              <Dropdown.Item onClick={handleSignout}>signout</Dropdown.Item>
             </Link>
           </Dropdown>
         ) : (
@@ -84,6 +112,7 @@ const Header = () => {
 
         <Navbar.Toggle />
       </div>
+
       <Navbar.Collapse>
         <Navbar.Link active={"/" === path} as={"div"}>
           <Link to="/">Home</Link>

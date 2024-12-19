@@ -3,14 +3,15 @@ import axios from 'axios'
 import {HiOutlineExclamationCircle} from 'react-icons/hi'
 import { useEffect, useRef, useState } from "react";
 import { useSelector,useDispatch } from "react-redux";
-import { ADD_PROFILE_IMAGE_URL, DELETE_USER_URL, HOST, PROFILE_UPDATE_URL } from "../../api_routes.js";
-import {updateStart,updateFail,updateSuccess,deleteStart,deleteSuccess,deleteFail} from "../redux/user/UserSlice.js";
+import { ADD_PROFILE_IMAGE_URL, DELETE_USER_URL, HOST, PROFILE_UPDATE_URL, SIGNOUT_URL } from "../../api_routes.js";
+import {updateStart,updateFail,updateSuccess,deleteStart,deleteSuccess,deleteFail,signoutSuccess} from "../redux/user/UserSlice.js";
 const DashProfile = () => {
   const { currentUser,loading,error } = useSelector((state) => state.user);
   const [showModal,setShowModal]=useState(false)
   const [profileImage,setProfileImage]=useState(null)
   const [profilePicture, setProfilePicture] = useState(currentUser.profilePicture);
   const [fileURL, setFileURL] = useState(null);
+  const [success,setSuccess]=useState(false)
   const filePickerRef = useRef();
   const usernameRef=useRef()
   const emailRef=useRef()
@@ -55,11 +56,12 @@ const DashProfile = () => {
       console.log(response)
       if(response.status===200){
         dispatch(updateSuccess(response.data))
+        setSuccess(true)
         console.log("updatedData=",response.data)
       }
       setFileURL(null)
     } catch (error) {
-      dispatch(updateFail(error))
+      dispatch(updateFail(error.message))
     }
     
   }
@@ -77,6 +79,20 @@ const DashProfile = () => {
       }
     } catch (error) {
        dispatch(deleteFail(error.message))
+    }
+  }
+
+  const handleSignout=async()=>{
+    try {
+      const res=await axios.post(SIGNOUT_URL,{withCredentials:true})
+      console.log(res)
+      if(res.status===200){
+        
+        dispatch(signoutSuccess())
+        console.log(currentUser)
+      }
+    } catch (error) {
+      console.log(error.message)
     }
   }
   return (
@@ -121,7 +137,7 @@ const DashProfile = () => {
       </form>
       <div className="text-red-500 flex justify-between mt-4">
         <span className="cursor-pointer" onClick={()=>setShowModal(true)}>Delete Account</span>
-        <span className="cursor-pointer">Sign Out</span>
+        <span className="cursor-pointer" onClick={handleSignout}>Sign Out</span>
       </div>
       <Modal show={showModal} onClose={()=>setShowModal(false)} popup size='md'>
         <Modal.Header/>
@@ -137,9 +153,7 @@ const DashProfile = () => {
         </Modal.Body>
       </Modal>
 
-      {
-        error && <Alert color="failure">{error}</Alert>
-      }
+      {/* {error && <Alert color="failure">{error}</Alert>} */}
     </div>
   );
 };
