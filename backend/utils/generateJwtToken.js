@@ -5,6 +5,7 @@ const generateJwtToken=(validUser)=>{
           id: validUser._id,
           username: validUser.username,
           email: validUser.email,
+          isAdmin:validUser.isAdmin,
         },
         process.env.JWT_SECRET,
         
