@@ -8,6 +8,7 @@ const multer=require('multer')
 const { userRoutes } = require("./routes/Userroutes.js");
 const { authRoutes } = require("./routes/Authroutes.js");
 const { uploadRoutes } = require("./routes/UploadRoutes.js");
+const { PostRoutes } = require("./routes/PostRoutes.js");
 dotenv.config();
 const app = express();
 
@@ -32,7 +33,7 @@ app.use('/uploads/profiles',express.static('uploads/profiles'))
 app.use('/api/user',userRoutes)
 app.use('/api/auth',authRoutes)
 app.use('/api/upload',uploadRoutes)
-
+app.use('/api/post',PostRoutes)
 app.use((err,req,res,next)=>{
   const statusCode=err.statusCode||500
   const message=err.message||'Internal server error'

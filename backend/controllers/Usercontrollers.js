@@ -92,6 +92,7 @@ const signout=async(req,res,next)=>{
     return next(error)
   }
 }
+
 module.exports = {
   updateUser,
   deleteUser,
