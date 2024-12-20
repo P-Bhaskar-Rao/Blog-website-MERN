@@ -14,26 +14,21 @@ const Header = () => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
-  console.log("currentUser=",currentUser)
-  
+
   const profileImage = currentUser && currentUser.profilePicture
     ? currentUser.profilePicture.substr(0, 5) === 'https'
       ? currentUser.profilePicture
       : `${HOST}/${currentUser.profilePicture}`
     : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
 
-    console.log(profileImage)
+
 
 
     const handleSignout=async()=>{
-      console.log('clicked')
       try {
         const res=await axios.post(SIGNOUT_URL,{withCredentials:true})
-        console.log(res)
         if(res.status===200){
-          
           dispatch(signoutSuccess())
-          console.log(currentUser)
         }
       } catch (error) {
         console.log(error.message)

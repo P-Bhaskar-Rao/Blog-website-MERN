@@ -81,7 +81,6 @@ const DashProfile = () => {
           ? currentUser.profilePicture
           : `${HOST}/${currentUser.profilePicture}`
       );
-      console.log(profileImage);
     }
   }, [currentUser.profilePicture]);
 

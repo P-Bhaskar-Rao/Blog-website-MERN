@@ -1,15 +1,16 @@
 import { Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { HiArrowSmRight, HiUser } from "react-icons/hi";
+import { HiArrowSmRight, HiDocumentText, HiUser } from "react-icons/hi";
 import { Link, useLocation } from "react-router-dom";
 import { signoutSuccess } from "../redux/user/UserSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { SIGNOUT_URL } from "../../api_routes";
 const DashSideBar = () => {
+  const { currentUser } = useSelector((state) => state.user);
   const location = useLocation();
   const [tab, setTab] = useState();
-  const dispatch=useDispatch()
+  const dispatch = useDispatch();
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
@@ -18,35 +19,44 @@ const DashSideBar = () => {
     }
   }, [location.search]);
 
-  const handleSignout=async()=>{
+  const handleSignout = async () => {
     try {
-      const res=await axios.post(SIGNOUT_URL,{withCredentials:true})
-      console.log(res)
-      if(res.status===200){
-        
-        dispatch(signoutSuccess())
-        console.log(currentUser)
+      const res = await axios.post(SIGNOUT_URL, { withCredentials: true });
+      console.log(res);
+      if (res.status === 200) {
+        dispatch(signoutSuccess());
       }
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
     }
-  }
+  };
   return (
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
-        <Sidebar.ItemGroup>
-          <Link to='/dashboard?tab=profile'>
+        <Sidebar.ItemGroup className="flex flex-col gap-1"> 
+          <Link to="/dashboard?tab=profile">
             <Sidebar.Item
               active={tab === "profile"}
               icon={HiUser}
-              label={"User"}
+              label={currentUser.isAdmin ? "Admin" : "User"}
               labelColor="dark"
-              as={'div'}
+              as={"div"}
             >
               Profile
             </Sidebar.Item>
           </Link>
 
+          {currentUser.isAdmin && (
+            <Link to="/dashboard?tab=posts">
+              <Sidebar.Item
+                active={tab === "posts"}
+                icon={HiDocumentText}
+                as={"div"}
+              >
+                Posts
+              </Sidebar.Item>
+            </Link>
+          )}
           <Sidebar.Item
             active={tab === "signout"}
             icon={HiArrowSmRight}
