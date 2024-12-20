@@ -29,6 +29,7 @@ app.use(cookieParser())
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use('/uploads/profiles',express.static('uploads/profiles'))
+app.use('/uploads/posts',express.static('uploads/posts'))
 
 app.use('/api/user',userRoutes)
 app.use('/api/auth',authRoutes)

@@ -20,6 +20,9 @@ import {
   signoutSuccess,
 } from "../redux/user/UserSlice.js";
 import { Link } from "react-router-dom";
+import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+
 const DashProfile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const [showModal, setShowModal] = useState(false);
@@ -28,6 +31,7 @@ const DashProfile = () => {
     currentUser.profilePicture
   );
   const [fileUploading, setFileUploading] = useState(false);
+  const [fileUploadingProgress, setFileUploadingProgress] = useState(null);
   const [fileURL, setFileURL] = useState(null);
   const [success, setSuccess] = useState(false);
   const filePickerRef = useRef();
@@ -38,24 +42,35 @@ const DashProfile = () => {
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      // setFileURL(URL.createObjectURL(file));
+      setFileURL(URL.createObjectURL(file));
       const formData = new FormData();
       formData.append("profile-image", file);
       setFileUploading(true);
+      setFileUploadingProgress(0);
       try {
         const response = await axios.post(
           `${ADD_PROFILE_IMAGE_URL}/${currentUser._id}`,
           formData,
-          { withCredentials: true }
+          {
+            withCredentials: true,
+            onUploadProgress: (ProgressEvent) => {
+              const { loaded, total } = ProgressEvent;
+              const percentCompleted = Math.round((loaded * 100) / total);
+              console.log(percentCompleted);
+              setFileUploadingProgress(percentCompleted);
+            },
+          }
         );
         console.log(response);
         if (response.status === 200) {
           setProfilePicture(response.data.message);
+          setFileUploadingProgress(null);
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
+        setFileUploadingProgress(null);
       }
-      setFileUploading(false)
+      setFileUploading(false);
     }
   };
 
@@ -140,12 +155,37 @@ const DashProfile = () => {
           hidden
         ></input>
         <div
-          className="w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full"
+          className="relative w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full"
           onClick={() => filePickerRef.current.click()}
         >
+          {fileUploadingProgress && (
+            <CircularProgressbar
+            className="w-full h-full"
+              value={fileUploadingProgress || 0}
+              text={`${fileUploadingProgress || 0}%`}
+              strokeWidth={5}
+              styles={{
+                root: {
+                  width: "100%",
+                  height: "100%",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                },
+                path: {
+                  stroke: `rgba(62, 152, 199, ${fileUploadingProgress / 100})`,
+                },
+              }}
+            />
+          )}
+
           <img
             src={fileURL ? fileURL : profileImage}
-            className="w-full h-full rounded-full border-8 border-[lightgray] object-cover"
+            className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] ${
+              fileUploadingProgress &&
+              fileUploadingProgress < 100 &&
+              "opacity-60"
+            }`}
             alt="profile-picture"
           />
         </div>
