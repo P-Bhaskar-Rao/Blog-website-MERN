@@ -1,12 +1,13 @@
 import { Alert, Button, FileInput, Select, TextInput } from "flowbite-react"
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { ADD_POST_IMAGE_URL, HOST } from "../../api_routes";
+import { ADD_POST_IMAGE_URL, CREATE_POST_URL, HOST } from "../../api_routes";
 import { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
     const {currentUser}=useSelector(state=>state.user)
@@ -15,6 +16,9 @@ const CreatePost = () => {
     const [imageUploadProgress,setImageUploadProgress]=useState(null)
     const [imageUploadError,setImageUploadError]=useState(null)
     const [imageUploadSuccess,setImageUploadSuccess]=useState(null)
+    const [postData,setPostData]=useState({})
+    const [publishError,setPublishError]=useState(null)
+    const navigate=useNavigate()
     const handleImageChange=(e)=>{
          setFile(e.target.files[0]);
     }
@@ -37,6 +41,7 @@ const CreatePost = () => {
                 })
                 if(res.status===200){
                     setFileURL(res.data.message)
+                    setPostData({...postData,image:res.data.message})
                     setImageUploadProgress(null)
                     setImageUploadSuccess('Image uploaded successfully')
                 }
@@ -49,14 +54,31 @@ const CreatePost = () => {
             setImageUploadError('Please select a file')
         }
     }
+const handleSubmit=async(e)=>{
+    e.preventDefault()
+    try {
+      const res=await axios.post(CREATE_POST_URL,postData,{withCredentials:true})  
+      if(res.status===201){
+            setPublishError(null)
+            setPostData({})
+            setFile(null)
+            setFileURL(null)
+            navigate(`/post/${res.data.slug}`)
+      }else{
+            setPublishError(res.data.message)
+      }
+    } catch (error) {
+       setPublishError('something went wrong') 
+    }
+}
 
   return (
     <div className="max-w-3xl min-h-screen mx-auto p-3">
         <h1 className="text-center text-3xl my-7 font-semibold">Create a post</h1>
-        <form className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div className="flex flex-col sm:flex-row gap-4 justify-between">
-                <TextInput className="flex-1" type='text' placeholder="Title" required id="title"/>
-                <Select>
+                <TextInput className="flex-1" type='text' placeholder="Title" required id="title" onChange={(e)=>setPostData({...postData,title:e.target.value})}/>
+                <Select onChange={(e)=>setPostData({...postData,category:e.target.value})}>
                     <option value="uncategorized">select a category</option>
                     <option value="javascript">JavaScript</option>
                     <option value='reactjs'>reactjs</option>
@@ -80,9 +102,12 @@ const CreatePost = () => {
             {
                 fileUrl && <img src={`${HOST}/${fileUrl}`} alt="post" className="w-full h-72 object-cover"/>
             }
-            <ReactQuill theme="snow" placeholder="write something..." className="h-72 mb-12" required/>
+            <ReactQuill theme="snow" placeholder="write something..." className="h-72 mb-12 dark:text-white dark:placeholder:text-white" required onChange={(value)=>setPostData({...postData,content:value})}/>
             <Button type="submit" gradientDuoTone="purpleToPink" className="my-2" disabled={imageUploadProgress}>Publish</Button>
         </form>
+        {
+            publishError && <Alert color="failure" className="my-2">{publishError}</Alert>
+        }
     </div>
   )
 }
