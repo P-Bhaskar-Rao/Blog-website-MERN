@@ -9,6 +9,7 @@ userRoutes.put('/update/:userId',verifyUser,updateUser)
 userRoutes.delete('/delete/:userId',verifyUser,deleteUser)
 userRoutes.post('/signout',signout)
 userRoutes.get('/get-users',verifyUser,getUsers)
+
 module.exports={
     userRoutes,
 }

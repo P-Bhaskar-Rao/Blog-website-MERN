@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { DELETE_POST_URL, GET_USERS_URL, HOST } from "../../api_routes";
+import { DELETE_POST_URL, DELETE_USER_URL, GET_USERS_URL, HOST } from "../../api_routes";
 import { Button, Modal, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
@@ -51,7 +51,7 @@ const DashUsers = () => {
     setShowModal(false);
     try {
       const res = await axios.delete(
-        `${DELETE_POST_URL}/${postId}/${currentUser._id}`,
+        `${DELETE_USER_URL}/${userId}`,
         { withCredentials: true }
       );
       if (res.status === 200) {
