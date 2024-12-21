@@ -11,3 +11,4 @@ export const ADD_POST_IMAGE_URL=`${BASE_URL}/upload/add-post-image`
 export const CREATE_POST_URL=`${BASE_URL}/post/create`
 export const GET_POSTS_URL=`${BASE_URL}/post/get`
 export const DELETE_POST_URL=`${BASE_URL}/post/delete`
+export const UPDATE_POST_URL=`${BASE_URL}/post/update`
