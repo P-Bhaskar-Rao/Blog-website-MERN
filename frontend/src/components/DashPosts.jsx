@@ -51,89 +51,86 @@ const DashPosts = () => {
   const handleDeletePost = async () => {
     setShowModal(false);
     try {
-      const res=await axios.delete(`${DELETE_POST_URL}/${postId}/${currentUser._id}`,{withCredentials:true})
-      if(res.status===200){
-        setUserPosts(userPosts.filter(post=>post._id!==postId))
+      const res = await axios.delete(
+        `${DELETE_POST_URL}/${postId}/${currentUser._id}`,
+        { withCredentials: true }
+      );
+      if (res.status === 200) {
+        setUserPosts(userPosts.filter((post) => post._id !== postId));
         setPostId(null);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
       {currentUser.isAdmin && userPosts.length > 0 ? (
-        <>
-          <Table hoverable className="shadow-md ">
-            <Table.Head>
-              <Table.HeadCell>Date updated</Table.HeadCell>
-              <Table.HeadCell>Post image</Table.HeadCell>
-              <Table.HeadCell>Post title</Table.HeadCell>
-              <Table.HeadCell>Category</Table.HeadCell>
-              <Table.HeadCell>Delete</Table.HeadCell>
-              <Table.HeadCell>
-                <span>Edit</span>
-              </Table.HeadCell>
-            </Table.Head>
-            <Table.Body className="font-medium">
-              {userPosts.map((post) => (
-                <>
-                  <Table.Row
-                    key={post._id}
-                    className="bg-white dark:bg-gray-800 dark:border-gray-700"
+        <Table hoverable className="shadow-md ">
+          <Table.Head>
+            <Table.HeadCell>Date updated</Table.HeadCell>
+            <Table.HeadCell>Post image</Table.HeadCell>
+            <Table.HeadCell>Post title</Table.HeadCell>
+            <Table.HeadCell>Category</Table.HeadCell>
+            <Table.HeadCell>Delete</Table.HeadCell>
+            <Table.HeadCell>
+              <span>Edit</span>
+            </Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="font-medium">
+            {userPosts.map((post) => (
+              <Table.Row
+                key={post._id}
+                className="bg-white dark:bg-gray-800 dark:border-gray-700"
+              >
+                <Table.Cell>
+                  <span>{new Date(post.updatedAt).toLocaleDateString()}</span>
+                </Table.Cell>
+                <Table.Cell>
+                  <Link to={`/post/${post.slug}`}>
+                    <img
+                      src={
+                        post.image.substr(0, 5) === "https"
+                          ? post.image
+                          : `${HOST}/${post.image}`
+                      }
+                      alt="post-image"
+                      className="w-20 h-10 object-cover bg-gray-500"
+                    />
+                  </Link>
+                </Table.Cell>
+                <Table.Cell>
+                  <Link
+                    to={`/post/${post.slug}`}
+                    className="text-gray-900 dark:text-white"
                   >
-                    <Table.Cell>
-                      <span>
-                        {new Date(post.updatedAt).toLocaleDateString()}
-                      </span>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Link to={`/post/${post.slug}`}>
-                        <img
-                          src={
-                            post.image.substr(0, 5) === "https"
-                              ? post.image
-                              : `${HOST}/${post.image}`
-                          }
-                          alt="post-image"
-                          className="w-20 h-10 object-cover bg-gray-500"
-                        />
-                      </Link>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Link
-                        to={`/post/${post.slug}`}
-                        className="text-gray-900 dark:text-white"
-                      >
-                        {post.title}
-                      </Link>
-                    </Table.Cell>
-                    <Table.Cell>{post.category}</Table.Cell>
-                    <Table.Cell>
-                      <span
-                        onClick={() => {
-                          setShowModal(true);
-                          setPostId(post._id);
-                        }}
-                        className="text-red-400 hover:underline cursor-pointer"
-                      >
-                        Delete
-                      </span>
-                    </Table.Cell>
-                    <Table.Cell>
-                      <Link
-                        to={`/update-post/${post._id}`}
-                        className="text-teal-500 hover:underline"
-                      >
-                        <span>Edit</span>
-                      </Link>
-                    </Table.Cell>
-                  </Table.Row>
-                </>
-              ))}
-            </Table.Body>
-          </Table>
-        </>
+                    {post.title}
+                  </Link>
+                </Table.Cell>
+                <Table.Cell>{post.category}</Table.Cell>
+                <Table.Cell>
+                  <span
+                    onClick={() => {
+                      setShowModal(true);
+                      setPostId(post._id);
+                    }}
+                    className="text-red-400 hover:underline cursor-pointer"
+                  >
+                    Delete
+                  </span>
+                </Table.Cell>
+                <Table.Cell>
+                  <Link
+                    to={`/update-post/${post._id}`}
+                    className="text-teal-500 hover:underline"
+                  >
+                    <span>Edit</span>
+                  </Link>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
       ) : (
         <p>You have not created any posts yet</p>
       )}
