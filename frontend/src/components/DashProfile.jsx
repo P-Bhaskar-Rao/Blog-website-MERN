@@ -262,7 +262,7 @@ const DashProfile = () => {
         </Modal.Body>
       </Modal>
 
-      {/* {error && <Alert color="failure">{error}</Alert>} */}
+      {error && <Alert color="failure">{error}</Alert>}
     </div>
   );
 };
