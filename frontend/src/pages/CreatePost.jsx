@@ -59,6 +59,7 @@ const handleSubmit=async(e)=>{
     try {
       const res=await axios.post(CREATE_POST_URL,postData,{withCredentials:true})  
       if(res.status===201){
+        console.log(res)
             setPublishError(null)
             setPostData({})
             setFile(null)
@@ -81,8 +82,8 @@ const handleSubmit=async(e)=>{
                 <Select onChange={(e)=>setPostData({...postData,category:e.target.value})}>
                     <option value="uncategorized">select a category</option>
                     <option value="javascript">JavaScript</option>
-                    <option value='reactjs'>reactjs</option>
-                    <option value='nextjs'>nextjs</option>
+                    <option value='react.js'>react.js</option>
+                    <option value='next.js'>next.js</option>
                 </Select>
             </div>
             <div className="flex justify-between gap-4 items-center border-4 border-teal-400 border-dotted p-2">
