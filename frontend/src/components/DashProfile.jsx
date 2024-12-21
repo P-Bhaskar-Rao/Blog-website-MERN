@@ -224,7 +224,7 @@ const DashProfile = () => {
               gradientDuoTone="purpleToPink"
               className="w-full"
             >
-              create a post
+              create post
             </Button>
           </Link>
         )}
