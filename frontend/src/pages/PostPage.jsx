@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { GET_POSTS_URL } from "../../api_routes";
 import { Button, Spinner } from "flowbite-react";
+import CallToAction from "../components/CallToAction";
 
 const PostPage = () => {
   const { postSlug } = useParams();
@@ -53,6 +54,9 @@ const PostPage = () => {
         </div>
         <div className='mx-auto w-full p-3 max-w-2xl post-content lg:max-w-6xl' dangerouslySetInnerHTML={{__html: post && post.content}}>
 
+        </div>
+        <div className="max-w-4xl mx-auto w-full">
+           <CallToAction/>
         </div>
     </main>
   )
