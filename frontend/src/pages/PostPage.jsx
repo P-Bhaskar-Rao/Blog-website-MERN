@@ -20,7 +20,7 @@ const PostPage = () => {
           withCredentials: true,
         });
         if (res.status === 200) {
-          console.log(res.data);
+          
           setPost(res.data.posts[0]);
           setLoading(false);
           setError(null);
