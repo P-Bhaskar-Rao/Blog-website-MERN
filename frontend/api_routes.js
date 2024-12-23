@@ -13,3 +13,4 @@ export const GET_POSTS_URL=`${BASE_URL}/post/get`
 export const DELETE_POST_URL=`${BASE_URL}/post/delete`
 export const UPDATE_POST_URL=`${BASE_URL}/post/update`
 export const GET_USERS_URL=`${BASE_URL}/user/get-users`
+export const CREATE_COMMENT_URL=`${BASE_URL}/comment/create`
