@@ -29,7 +29,7 @@ const {loading,error:errorMessage}=useSelector(state=>state.user)
       setSuccessMessage(null)
       const response=axios.post(SIGNIN_URL,formData,{withCredentials:true})
       response.then((res)=>{
-        console.log(res.data)
+       
         if(res.data.success===false){
           dispatch(signinFail(res.data.message))
         }else{

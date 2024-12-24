@@ -18,3 +18,4 @@ export const CREATE_COMMENT_URL=`${BASE_URL}/comment/create`
 export const GET_COMMENTS_URL=`${BASE_URL}/comment/get`
 export const LIKE_COMMENT_URL=`${BASE_URL}/comment/like-comment`
 export const EDIT_COMMENT_URL=`${BASE_URL}/comment/edit-comment`
+export const DELETE_COMMENT_URL=`${BASE_URL}/comment/delete-comment`

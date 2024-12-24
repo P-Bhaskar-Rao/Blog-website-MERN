@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import {
   CREATE_COMMENT_URL,
+  DELETE_COMMENT_URL,
   GET_COMMENTS_URL,
   HOST,
   LIKE_COMMENT_URL,
@@ -79,7 +80,7 @@ const CommentSection = ({ postId }) => {
       const res = await axios.put(`${LIKE_COMMENT_URL}/${commentId}`,'', {
         withCredentials: true,
       });
-      console.log(res);
+   
       if (res.status === 200) {
         setComments(
           comments.map((comment) => 
@@ -104,6 +105,19 @@ const CommentSection = ({ postId }) => {
 
   }
 
+  const handleDelete=async(commentId)=>{
+    try {
+      const res=await axios.delete(`${DELETE_COMMENT_URL}/${commentId}`,{withCredentials:true})
+      
+      if(res.status===200){
+        setComments(comments.filter(comment=>comment._id!==commentId))
+      }else{
+
+      }
+    } catch (error) {
+      
+    }
+  }
   return (
     <div className="max-w-2xl w-full mx-auto lg:max-w-4xl my-5">
       {currentUser ? (
@@ -170,7 +184,7 @@ const CommentSection = ({ postId }) => {
       )}
       {comments.length > 0 &&
         comments.map((comment) => (
-          <Comment key={comment._id} comment={comment} onLike={handleLike} onEdit={handleEdit}/>
+          <Comment key={comment._id} comment={comment} onLike={handleLike} onEdit={handleEdit} onDelete={handleDelete}/>
         ))}
     </div>
   );

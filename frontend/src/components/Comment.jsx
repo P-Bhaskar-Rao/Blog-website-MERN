@@ -4,12 +4,15 @@ import axios from "axios";
 import moment from "moment/moment";
 import { FaThumbsUp } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { Button, Textarea } from "flowbite-react";
-const Comment = ({ comment, onLike, onEdit }) => {
+import { Button, Modal, Textarea } from "flowbite-react";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
+
+const Comment = ({ comment, onLike, onEdit, onDelete }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [user, setUser] = useState(null);
-  const [isEditing,setIsEditing]=useState(false)
-  const [editedContent,setEditedContent]=useState(comment.content)
+  const [isEditing, setIsEditing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [editedContent, setEditedContent] = useState(comment.content);
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -27,25 +30,27 @@ const Comment = ({ comment, onLike, onEdit }) => {
     getUser();
   }, [comment]);
 
-  const handleEdit=()=>{
-    setIsEditing(true)
-    
-  }
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
 
-  const handleSave=async()=>{
+  const handleSave = async () => {
     try {
-      const res=await axios.put(`${EDIT_COMMENT_URL}/${comment._id}`,{content:editedContent},{withCredentials:true})
-      console.log(res)
-      if(res.status===200){
-        setIsEditing(false)
-        onEdit(comment,editedContent)
-      }else{
-
+      const res = await axios.put(
+        `${EDIT_COMMENT_URL}/${comment._id}`,
+        { content: editedContent },
+        { withCredentials: true }
+      );
+      console.log(res);
+      if (res.status === 200) {
+        setIsEditing(false);
+        onEdit(comment, editedContent);
+      } else {
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   return (
     <>
       {user ? (
@@ -72,11 +77,30 @@ const Comment = ({ comment, onLike, onEdit }) => {
             </div>
             {isEditing ? (
               <>
-              <Textarea className="my-4" value={editedContent} onChange={(e)=>setEditedContent(e.target.value)} />
-              <div className="flex gap-2 items-center justify-end text-xs ">
-                <Button type='button' gradientDuoTone="purpleToBlue" size='sm' onClick={handleSave}>Save</Button>
-                <Button type="button" gradientDuoTone="purpleToBlue" size='sm' outline onClick={()=>setIsEditing(false)}>Cancel</Button>
-              </div>
+                <Textarea
+                  className="my-4"
+                  value={editedContent}
+                  onChange={(e) => setEditedContent(e.target.value)}
+                />
+                <div className="flex gap-2 items-center justify-end text-xs ">
+                  <Button
+                    type="button"
+                    gradientDuoTone="purpleToBlue"
+                    size="sm"
+                    onClick={handleSave}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    type="button"
+                    gradientDuoTone="purpleToBlue"
+                    size="sm"
+                    outline
+                    onClick={() => setIsEditing(false)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
               </>
             ) : (
               <>
@@ -104,8 +128,22 @@ const Comment = ({ comment, onLike, onEdit }) => {
                   {comment &&
                     (comment.userId === currentUser._id ||
                       currentUser.isAdmin) && (
-                      <button className="text-gray-400 hover:text-blue-500" onClick={handleEdit}>
+                      <button
+                        className="text-gray-400 hover:text-blue-500"
+                        onClick={handleEdit}
+                      >
                         Edit
+                      </button>
+                    )}
+
+                  {comment &&
+                    (comment.userId === currentUser._id ||
+                      currentUser.isAdmin) && (
+                      <button
+                        className="text-gray-400 hover:text-red-500"
+                        onClick={() => setShowModal(true)}
+                      >
+                        Delete
                       </button>
                     )}
                 </div>
@@ -118,6 +156,30 @@ const Comment = ({ comment, onLike, onEdit }) => {
           <p>something went wrong</p>
         </div>
       )}
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete this comment?
+            </h3>
+            <div className="flex justify-between mx-8 items-center">
+              <Button color="failure" onClick={()=>onDelete(comment._id)}>
+                Yes, I'm sure
+              </Button>
+              <Button color="gray" onClick={() => setShowModal(false)}>
+                No, Cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
