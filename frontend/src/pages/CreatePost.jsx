@@ -59,7 +59,7 @@ const handleSubmit=async(e)=>{
     try {
       const res=await axios.post(CREATE_POST_URL,postData,{withCredentials:true})  
       if(res.status===201){
-        console.log(res)
+        
             setPublishError(null)
             setPostData({})
             setFile(null)
