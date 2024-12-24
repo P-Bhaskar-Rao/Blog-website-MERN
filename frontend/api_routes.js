@@ -16,6 +16,7 @@ export const GET_USERS_URL=`${BASE_URL}/user/get-users`
 export const GET_USER=`${BASE_URL}/user`
 export const CREATE_COMMENT_URL=`${BASE_URL}/comment/create`
 export const GET_COMMENTS_URL=`${BASE_URL}/comment/get`
+export const GET_ALL_COMMENTS_URL=`${BASE_URL}/comment/get-comments`
 export const LIKE_COMMENT_URL=`${BASE_URL}/comment/like-comment`
 export const EDIT_COMMENT_URL=`${BASE_URL}/comment/edit-comment`
 export const DELETE_COMMENT_URL=`${BASE_URL}/comment/delete-comment`
