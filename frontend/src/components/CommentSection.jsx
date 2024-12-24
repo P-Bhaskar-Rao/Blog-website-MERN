@@ -1,6 +1,11 @@
 import { useSelector } from "react-redux";
-import { CREATE_COMMENT_URL, GET_COMMENTS_URL, HOST } from "../../api_routes";
-import { Link } from "react-router-dom";
+import {
+  CREATE_COMMENT_URL,
+  GET_COMMENTS_URL,
+  HOST,
+  LIKE_COMMENT_URL,
+} from "../../api_routes";
+import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -11,6 +16,7 @@ const CommentSection = ({ postId }) => {
   const [commentError, setCommentError] = useState(null);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
+  const navigate = useNavigate();
   const profilePicture =
     currentUser &&
     currentUser.profilePicture &&
@@ -33,7 +39,7 @@ const CommentSection = ({ postId }) => {
       if (res.status === 201) {
         setComment("");
         setCommentError(null);
-        setComments([...comments,res.data])
+        setComments([...comments, res.data]);
       } else {
         setCommentError(res.data.message);
       }
@@ -61,6 +67,36 @@ const CommentSection = ({ postId }) => {
       getComments();
     }
   }, [postId]);
+  
+  const handleLike = async (commentId) => {
+    if (!currentUser) {
+      navigate("/signin");
+      return;
+    }
+
+    try {
+      const res = await axios.put(`${LIKE_COMMENT_URL}/${commentId}`,'', {
+        withCredentials: true,
+      });
+      console.log(res);
+      if (res.status === 200) {
+        setComments(
+          comments.map((comment) => 
+            comment._id === commentId
+              ? {
+                  ...comment,
+                  likes:res.data.likes,
+                  numberOfLikes:res.data.likes.length
+                }
+              : comment
+          )
+        );
+      } else {
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="max-w-2xl w-full mx-auto lg:max-w-4xl my-5">
       {currentUser ? (
@@ -84,7 +120,7 @@ const CommentSection = ({ postId }) => {
         <div className="my-5 text-teal-500 text-sm flex gap-1">
           You must be signed in to comment
           <Link to={"/signin"} className="text-blue-500 hover:underline">
-            Signin{" "}
+            Signin
           </Link>
         </div>
       )}
@@ -120,13 +156,15 @@ const CommentSection = ({ postId }) => {
       ) : (
         <div className="flex gap-1 my-5 text-sm items-center">
           <p className="">Comments</p>
-          <div className="border border-gray-400 text-center px-2 py-1">{comments.length}</div>
+          <div className="border border-gray-400 text-center px-2 py-1">
+            {comments.length}
+          </div>
         </div>
-        
       )}
-      {
-        comments.length>0 && comments.map((comment)=><Comment key={comment._id} comment={comment}/>)
-      }
+      {comments.length > 0 &&
+        comments.map((comment) => (
+          <Comment key={comment._id} comment={comment} onLike={handleLike} />
+        ))}
     </div>
   );
 };

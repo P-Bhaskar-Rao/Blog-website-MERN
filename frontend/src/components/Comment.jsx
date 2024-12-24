@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { GET_USER, HOST } from "../../api_routes";
 import axios from "axios";
 import moment from "moment/moment";
-
-const Comment = ({ comment }) => {
+import {FaThumbsUp} from 'react-icons/fa'
+import { useSelector } from "react-redux";
+const Comment = ({ comment,onLike }) => {
+  const {currentUser}=useSelector(state=>state.user)
   const [user, setUser] = useState(null);
   useEffect(() => {
     const getUser = async () => {
@@ -11,7 +13,6 @@ const Comment = ({ comment }) => {
         const res = await axios.get(`${GET_USER}/${comment.userId}`, {
           withCredentials: true,
         });
-        console.log(res);
         if (res.status === 200) {
           setUser(res.data);
         } else {
@@ -43,6 +44,14 @@ const Comment = ({ comment }) => {
                 <span className="text-xs text-gray-500">{moment(comment.createdAt).fromNow()}</span>
             </div>
             <p className="text-gray-500 dark:text-gray-300 mb-2">{comment.content}</p>
+            <div className="flex pt-2 border-t dark:border-gray-700 items-center max-w-fit gap-2">
+              <button type='button' onClick={()=>onLike(comment._id)} className={`text-gray-400 hover:text-blue-500 ${currentUser && comment.likes.includes(currentUser._id) && '!text-blue-500'}`}>
+                <FaThumbsUp/>
+              </button>
+              {
+                comment.numberOfLikes>0 && <p className="text-xs text-gray-400">{comment.numberOfLikes} {comment.numberOfLikes===1?'like':'likes'}</p>
+              }
+            </div>
         </div>
         </div>
       ) : (
