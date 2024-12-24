@@ -16,6 +16,7 @@ const CommentSection = ({ postId }) => {
   const [commentError, setCommentError] = useState(null);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
+  
   const navigate = useNavigate();
   const profilePicture =
     currentUser &&
@@ -67,7 +68,7 @@ const CommentSection = ({ postId }) => {
       getComments();
     }
   }, [postId]);
-  
+
   const handleLike = async (commentId) => {
     if (!currentUser) {
       navigate("/signin");
@@ -97,6 +98,12 @@ const CommentSection = ({ postId }) => {
       console.log(error);
     }
   };
+
+  const handleEdit=async(comment,editedContent)=>{
+    setComments(comments.map(c=>c._id===comment._id?{...c,content:editedContent}:c))
+
+  }
+
   return (
     <div className="max-w-2xl w-full mx-auto lg:max-w-4xl my-5">
       {currentUser ? (
@@ -163,7 +170,7 @@ const CommentSection = ({ postId }) => {
       )}
       {comments.length > 0 &&
         comments.map((comment) => (
-          <Comment key={comment._id} comment={comment} onLike={handleLike} />
+          <Comment key={comment._id} comment={comment} onLike={handleLike} onEdit={handleEdit}/>
         ))}
     </div>
   );
