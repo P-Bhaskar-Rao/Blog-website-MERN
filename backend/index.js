@@ -4,12 +4,12 @@ const dotenv = require("dotenv");
 const path=require('path')
 const cors=require('cors')
 const cookieParser=require('cookie-parser')
-const multer=require('multer')
+
 const { userRoutes } = require("./routes/Userroutes.js");
 const { authRoutes } = require("./routes/Authroutes.js");
 const { uploadRoutes } = require("./routes/UploadRoutes.js");
 const { PostRoutes } = require("./routes/PostRoutes.js");
-const commentRoutes = require("./routes/CommentRoutes.js");
+const {commentRoutes }= require("./routes/CommentRoutes.js");
 dotenv.config();
 
 const __dirname=path.resolve()

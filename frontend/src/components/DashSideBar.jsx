@@ -18,7 +18,7 @@ const DashSideBar = () => {
   const location = useLocation();
   const [tab, setTab] = useState();
   const dispatch = useDispatch();
-  console.log(tab)
+ 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
