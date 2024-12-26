@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   HiAnnotation,
   HiArrowSmRight,
+  HiChartPie,
   HiDocumentText,
   HiOutlineUserGroup,
   HiUser,
@@ -17,6 +18,7 @@ const DashSideBar = () => {
   const location = useLocation();
   const [tab, setTab] = useState();
   const dispatch = useDispatch();
+  console.log(tab)
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const tabFromUrl = urlParams.get("tab");
@@ -51,7 +53,17 @@ const DashSideBar = () => {
               Profile
             </Sidebar.Item>
           </Link>
-
+          {currentUser.isAdmin && (
+            <Link to="/dashboard?tab=dash">
+              <Sidebar.Item
+                active={tab === "dash" || !tab}
+                icon={HiChartPie}
+                as={"div"}
+              >
+                Dashboard
+              </Sidebar.Item>
+            </Link>
+          )}
           {currentUser.isAdmin && (
             <Link to="/dashboard?tab=posts">
               <Sidebar.Item
@@ -76,7 +88,7 @@ const DashSideBar = () => {
             </Link>
           )}
 
-{currentUser.isAdmin && (
+          {currentUser.isAdmin && (
             <Link to="/dashboard?tab=comments">
               <Sidebar.Item
                 active={tab === "comments"}
@@ -87,6 +99,8 @@ const DashSideBar = () => {
               </Sidebar.Item>
             </Link>
           )}
+
+         
           <Sidebar.Item
             active={tab === "signout"}
             icon={HiArrowSmRight}
