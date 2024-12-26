@@ -156,7 +156,7 @@ const DashboardComp = () => {
                         src={
                           user.profilePicture.substr(0, 5) === "https"
                             ? user.profilePicture
-                            : `$${HOST}/${user.profilePicture}`
+                            : `${HOST}/${user.profilePicture}`
                         }
                         alt="profile-picture"
                         className="w-10 h-10 rounded-full object-cover"

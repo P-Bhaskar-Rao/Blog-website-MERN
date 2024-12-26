@@ -56,12 +56,12 @@ const DashProfile = () => {
             onUploadProgress: (ProgressEvent) => {
               const { loaded, total } = ProgressEvent;
               const percentCompleted = Math.round((loaded * 100) / total);
-              console.log(percentCompleted);
+              
               setFileUploadingProgress(percentCompleted);
             },
           }
         );
-        console.log(response);
+        
         if (response.status === 200) {
           setProfilePicture(response.data.message);
           setFileUploadingProgress(null);

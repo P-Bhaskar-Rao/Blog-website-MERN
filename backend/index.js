@@ -4,15 +4,15 @@ const dotenv = require("dotenv");
 const path=require('path')
 const cors=require('cors')
 const cookieParser=require('cookie-parser')
-
+const multer=require('multer')
 const { userRoutes } = require("./routes/Userroutes.js");
 const { authRoutes } = require("./routes/Authroutes.js");
 const { uploadRoutes } = require("./routes/UploadRoutes.js");
 const { PostRoutes } = require("./routes/PostRoutes.js");
-const {commentRoutes }= require("./routes/CommentRoutes.js");
+const commentRoutes = require("./routes/CommentRoutes.js");
 dotenv.config();
 
-const __dirname=path.resolve()
+
 const app = express();
 
 //mongoDB connection
@@ -41,11 +41,7 @@ app.use('/api/upload',uploadRoutes)
 app.use('/api/post',PostRoutes)
 app.use('/api/comment',commentRoutes)
 
-app.use(express.static(path.join(__dirname,'/frontend/dist')))
 
-app.get('*',(req,res)=>{
-  res.sendFile(path.join(__dirname,'frontend','dist','index.html'))
-})
 app.use((err,req,res,next)=>{
   const statusCode=err.statusCode||500
   const message=err.message||'Internal server error'
