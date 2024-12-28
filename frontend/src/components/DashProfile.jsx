@@ -24,7 +24,8 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
 const DashProfile = () => {
-  const { currentUser, loading, error } = useSelector((state) => state.user);
+  const { currentUser, loading } = useSelector((state) => state.user);
+  const [error,setError]=useState(null)
   const [showModal, setShowModal] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [profilePicture, setProfilePicture] = useState(
@@ -47,6 +48,7 @@ const DashProfile = () => {
       formData.append("profile-image", file);
       setFileUploading(true);
       setFileUploadingProgress(0);
+      setSuccess(false)
       try {
         const response = await axios.post(
           `${ADD_PROFILE_IMAGE_URL}/${currentUser._id}`,
@@ -56,7 +58,6 @@ const DashProfile = () => {
             onUploadProgress: (ProgressEvent) => {
               const { loaded, total } = ProgressEvent;
               const percentCompleted = Math.round((loaded * 100) / total);
-              
               setFileUploadingProgress(percentCompleted);
             },
           }
@@ -67,7 +68,7 @@ const DashProfile = () => {
           setFileUploadingProgress(null);
         }
       } catch (error) {
-        console.log(error);
+        setError('failed to upload image')
         setFileUploadingProgress(null);
       }
       setFileUploading(false);
@@ -99,15 +100,20 @@ const DashProfile = () => {
         formData,
         { withCredentials: true }
       );
-      console.log(response);
+  
       if (response.status === 200) {
         dispatch(updateSuccess(response.data));
         setSuccess(true);
-        console.log("updatedData=", response.data);
+      }else{
+        dispatch(updateFail(response.data.message))
+        setError(response.data.message)
+        setSuccess(false)
       }
       setFileURL(null);
     } catch (error) {
-      dispatch(updateFail(error.message));
+      setSuccess(false)
+      dispatch(updateFail(error.response.data.message));
+      setError(error.response.data.message)
     }
   };
 
@@ -119,24 +125,26 @@ const DashProfile = () => {
         `${DELETE_USER_URL}/${currentUser._id}`,
         { withCredentials: true }
       );
-      console.log(response);
+      
       if (response.status === 200) {
         dispatch(deleteSuccess());
       } else {
         dispatch(deleteFail(response.data.message));
+        setError(response.data.message)
       }
     } catch (error) {
       dispatch(deleteFail(error.message));
+      setError(error.message)
     }
   };
 
   const handleSignout = async () => {
     try {
       const res = await axios.post(SIGNOUT_URL, { withCredentials: true });
-      console.log(res);
+     
       if (res.status === 200) {
         dispatch(signoutSuccess());
-        console.log(currentUser);
+       
       }
     } catch (error) {
       console.log(error.message);
@@ -263,6 +271,7 @@ const DashProfile = () => {
       </Modal>
 
       {error && <Alert color="failure">{error}</Alert>}
+      {success && <Alert color="success">Profile update successfully</Alert>}
     </div>
   );
 };

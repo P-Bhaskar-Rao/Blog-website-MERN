@@ -4,7 +4,6 @@ import dotenv from "dotenv"
 import path from "path"
 import cors from "cors"
 import cookieParser from "cookie-parser"
-
 import { userRoutes } from "./routes/Userroutes.js";
 import   authRoutes  from "./routes/Authroutes.js";
 import   uploadRoutes  from "./routes/UploadRoutes.js";
@@ -12,7 +11,7 @@ import  PostRoutes  from "./routes/PostRoutes.js";
 import commentRoutes from "./routes/CommentRoutes.js";
 dotenv.config();
 
-
+const __dirname=path.resolve()
 const app = express();
 
 //mongoDB connection
@@ -41,6 +40,12 @@ app.use('/api/upload',uploadRoutes)
 app.use('/api/post',PostRoutes)
 app.use('/api/comment',commentRoutes)
 
+
+app.use(express.static(path.join(__dirname, '/frontend/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+});
 
 app.use((err,req,res,next)=>{
   const statusCode=err.statusCode||500
