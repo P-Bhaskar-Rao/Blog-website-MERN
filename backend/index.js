@@ -1,15 +1,15 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const path=require('path')
-const cors=require('cors')
-const cookieParser=require('cookie-parser')
-const multer=require('multer')
-const { userRoutes } = require("./routes/Userroutes.js");
-const { authRoutes } = require("./routes/Authroutes.js");
-const { uploadRoutes } = require("./routes/UploadRoutes.js");
-const { PostRoutes } = require("./routes/PostRoutes.js");
-const commentRoutes = require("./routes/CommentRoutes.js");
+import express from "express"
+import mongoose from "mongoose"
+import dotenv from "dotenv"
+import path from "path"
+import cors from "cors"
+import cookieParser from "cookie-parser"
+
+import { userRoutes } from "./routes/Userroutes.js";
+import   authRoutes  from "./routes/Authroutes.js";
+import   uploadRoutes  from "./routes/UploadRoutes.js";
+import  PostRoutes  from "./routes/PostRoutes.js";
+import commentRoutes from "./routes/CommentRoutes.js";
 dotenv.config();
 
 

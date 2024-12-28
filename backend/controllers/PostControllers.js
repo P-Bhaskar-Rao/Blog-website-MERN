@@ -1,7 +1,7 @@
-const Post = require("../models/PostModel");
-const { errorHandler } = require("../utils/error");
+import  {Post} from "../models/PostModel.js";
+import  errorHandler  from "../utils/error.js";
 
-const createPost = async (req, res, next) => {
+export const createPost = async (req, res, next) => {
   if (!req.user.isAdmin) {
     return next(
       errorHandler(403, "You are not allowed to create a post", false)
@@ -30,7 +30,7 @@ const createPost = async (req, res, next) => {
   }
 };
 
-const getPosts = async (req, res, next) => {
+export const getPosts = async (req, res, next) => {
   try {
     const startIdx = parseInt(req.query.startIdx) || 0;
     const limit = parseInt(req.query.limit) || 9;
@@ -67,7 +67,7 @@ const getPosts = async (req, res, next) => {
   }
 };
 
-const deletePost = async (req, res, next) => {
+export const deletePost = async (req, res, next) => {
   try {
     if (!req.user.isAdmin || req.user.id !== req.params.userId) {
       return next(
@@ -81,7 +81,7 @@ const deletePost = async (req, res, next) => {
   }
 };
 
-const updatePost = async (req, res, next) => {
+export const updatePost = async (req, res, next) => {
   if (!req.user.isAdmin || req.params.userId != req.user.id) {
     return next(
       errorHandler(400, "you are not allowed to update this user", false)
@@ -108,9 +108,4 @@ const updatePost = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  createPost,
-  getPosts,
-  deletePost,
-  updatePost,
-};
+

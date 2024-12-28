@@ -1,8 +1,8 @@
-const bcryptjs = require("bcryptjs");
-const { User } = require("../models/Usermodel.js");
-const { errorHandler } = require("../utils/error.js");
-const { generateJwtToken } = require("../utils/generateJwtToken.js");
-const signup = async (req, res, next) => {
+import bcryptjs from "bcryptjs"
+import {User} from "../models/Usermodel.js";
+import  errorHandler  from "../utils/error.js";
+import  generateJwtToken  from "../utils/generateJwtToken.js";
+export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
   if (
     !username ||
@@ -24,7 +24,7 @@ const signup = async (req, res, next) => {
   }
 };
 
-const signin = async (req, res, next) => {
+export const signin = async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password || email === "" || password === "") {
     next(errorHandler(400, "all fields are required", false));
@@ -53,7 +53,7 @@ const signin = async (req, res, next) => {
   }
 };
 
-const google = async (req, res, next) => {
+export const google = async (req, res, next) => {
   const { email, name, googlePhotoURL } = req.body;
   try {
     const validUser = await User.findOne({ email });
@@ -96,8 +96,3 @@ const google = async (req, res, next) => {
   }
 };
 
-module.exports = {
-  signup,
-  signin,
-  google,
-};

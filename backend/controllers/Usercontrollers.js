@@ -1,9 +1,9 @@
-const fs = require("fs");
-const { User } = require("../models/Usermodel.js");
-const { errorHandler } = require("../utils/error.js");
-const bcryptjs = require("bcryptjs");
+import fs from "fs"
+import { User } from "../models/Usermodel.js"
+import   errorHandler  from "../utils/error.js";
+import bcryptjs from "bcryptjs";
 
-const updateUser = async (req, res, next) => {
+export const updateUser = async (req, res, next) => {
   if (req.params.userId !== req.user.id) {
     return next(
       errorHandler(401, "You are not allowed to update this user", false)
@@ -67,7 +67,7 @@ const updateUser = async (req, res, next) => {
   }
 };
 
-const deleteUser=async(req,res,next)=>{
+export const deleteUser=async(req,res,next)=>{
   if (!req.user.isAdmin && req.params.userId !== req.user.id) {
     return next(
       errorHandler(401, "You are not allowed to delete this user", false)
@@ -83,7 +83,7 @@ const deleteUser=async(req,res,next)=>{
   }
 }
 
-const signout=async(req,res,next)=>{
+export const signout=async(req,res,next)=>{
   try {
     res.clearCookie('token')
     return res.status(200).send("user has been signed out")
@@ -92,7 +92,7 @@ const signout=async(req,res,next)=>{
   }
 }
 
-const getUsers=async(req,res,next)=>{
+export const getUsers=async(req,res,next)=>{
   if(!req.user.isAdmin){
     return next(errorHandler(401,"You are not allowed to view users",false))
   }
@@ -124,7 +124,7 @@ const getUsers=async(req,res,next)=>{
   }
 }
 
-const getUser=async(req,res,next)=>{
+export const getUser=async(req,res,next)=>{
   if(!req.params.userId){
     return next(errorHandler(400,'check the url',false))
   }
@@ -140,12 +140,5 @@ const getUser=async(req,res,next)=>{
   }
 }
 
-module.exports = {
-  updateUser,
-  deleteUser,
-  signout,
-  getUsers,
-  getUser
-};
 
 

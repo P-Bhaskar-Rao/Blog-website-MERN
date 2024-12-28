@@ -1,7 +1,7 @@
-const express=require("express");
-const { verifyUser } = require("../utils/verifyUser.js");
-const { updateUser,deleteUser,signout,getUsers,getUser } = require("../controllers/Usercontrollers.js");
-const userRoutes=express.Router();
+import express from "express"
+import   verifyUser  from "../utils/verifyUser.js";
+import { updateUser,deleteUser,signout,getUsers,getUser } from "../controllers/Usercontrollers.js";
+export const userRoutes=express.Router();
 userRoutes.get('/',(req,res)=>{
     res.send("Hello")
 })
@@ -11,6 +11,3 @@ userRoutes.post('/signout',signout)
 userRoutes.get('/get-users',verifyUser,getUsers)
 userRoutes.get('/:userId',getUser)
 
-module.exports={
-    userRoutes,
-}

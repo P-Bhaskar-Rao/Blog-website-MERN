@@ -1,6 +1,6 @@
-const Comment = require("../models/CommentModel");
-const { errorHandler } = require("../utils/error");
-const createComment = async (req, res, next) => {
+import {Comment} from  "../models/CommentModel.js";
+import  errorHandler  from "../utils/error.js";
+export const createComment = async (req, res, next) => {
   if (!req.user) {
     return next(errorHandler(401, "You must be signed in to comment", false));
   }
@@ -24,7 +24,7 @@ const createComment = async (req, res, next) => {
   }
 };
 
-const getComments = async (req, res, next) => {
+export const getComments = async (req, res, next) => {
   try {
     const comments = await Comment.find({ postId: req.params.postId }).sort({
       createdAt: -1,
@@ -35,7 +35,7 @@ const getComments = async (req, res, next) => {
   }
 };
 
-const getAllComments=async(req,res,next)=>{
+export const getAllComments=async(req,res,next)=>{
   if(!req.user.isAdmin){
     return next(errorHandler(403,'You are not allowed get all the comments',false))
   }
@@ -58,7 +58,7 @@ const getAllComments=async(req,res,next)=>{
   }
 }
 
-const likeComment = async (req, res, next) => {
+export const likeComment = async (req, res, next) => {
   try {
     const comment = await Comment.findById(req.params.commentId);
     if (!comment) {
@@ -79,7 +79,7 @@ const likeComment = async (req, res, next) => {
   }
 };
 
-const editComment = async (req, res, next) => {
+export const editComment = async (req, res, next) => {
   try {
     const comment = await Comment.findById(req.params.commentId);
     if (!comment) {
@@ -103,7 +103,7 @@ const editComment = async (req, res, next) => {
 };
 
 
-const deleteComment=async(req,res,next)=>{
+export const deleteComment=async(req,res,next)=>{
 
 try {
     const comment=await Comment.findById(req.params.commentId)
@@ -120,11 +120,4 @@ try {
 }
 }
 
-module.exports = {
-  createComment,
-  getComments,
-  likeComment,
-  editComment,
-  deleteComment,
-  getAllComments
-};
+

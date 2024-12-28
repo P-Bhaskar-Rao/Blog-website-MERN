@@ -1,4 +1,4 @@
-const jwt=require('jsonwebtoken')
+import jwt from "jsonwebtoken"
 const generateJwtToken=(validUser)=>{
     const token = jwt.sign(
         {
@@ -13,6 +13,4 @@ const generateJwtToken=(validUser)=>{
      return token;
  }
 
- module.exports={
-    generateJwtToken,
- }
+export default generateJwtToken
